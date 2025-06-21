@@ -5,6 +5,8 @@ import { MainDashboard } from './components/MainDashboard';
 import { MarketingLayout } from './layouts/MarketingLayout';
 import { Messages } from './modules/marketing/Messages';
 import { Dashboard as MarketingDashboard } from './modules/marketing/Dashboard';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
@@ -30,46 +32,82 @@ function App() {
   return (
     <MantineProvider theme={theme}>
       <Notifications />
-      <BrowserRouter>
-        <Routes>
-          {/* Main Dashboard Route */}
-          <Route path="/" element={<MainDashboard />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Main Dashboard Route */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <MainDashboard />
+              </ProtectedRoute>
+            } />
 
-          {/* Marketing Routes */}
-          <Route path="/marketing" element={
-            <MarketingLayout>
-              <MarketingDashboard />
-            </MarketingLayout>
-          } />
-          <Route path="/marketing/messages" element={
-            <MarketingLayout>
-              <Messages />
-            </MarketingLayout>
-          } />
-          <Route path="/marketing/contacts" element={
-            <MarketingLayout>
-              <div>Contactos (En desarrollo)</div>
-            </MarketingLayout>
-          } />
-          <Route path="/marketing/stats" element={
-            <MarketingLayout>
-              <div>Estadísticas (En desarrollo)</div>
-            </MarketingLayout>
-          } />
-          <Route path="/marketing/settings" element={
-            <MarketingLayout>
-              <div>Configuración (En desarrollo)</div>
-            </MarketingLayout>
-          } />
+            {/* Marketing Routes */}
+            <Route path="/marketing" element={
+              <ProtectedRoute>
+                <MarketingLayout>
+                  <MarketingDashboard />
+                </MarketingLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing/messages" element={
+              <ProtectedRoute>
+                <MarketingLayout>
+                  <Messages />
+                </MarketingLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing/contacts" element={
+              <ProtectedRoute>
+                <MarketingLayout>
+                  <div>Contactos (En desarrollo)</div>
+                </MarketingLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing/stats" element={
+              <ProtectedRoute>
+                <MarketingLayout>
+                  <div>Estadísticas (En desarrollo)</div>
+                </MarketingLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/marketing/settings" element={
+              <ProtectedRoute>
+                <MarketingLayout>
+                  <div>Configuración (En desarrollo)</div>
+                </MarketingLayout>
+              </ProtectedRoute>
+            } />
 
-          {/* Placeholder Routes for other departments */}
-          <Route path="/ventas" element={<div>Ventas (En desarrollo)</div>} />
-          <Route path="/admin" element={<div>Administración (En desarrollo)</div>} />
-          <Route path="/rrhh" element={<div>RRHH (En desarrollo)</div>} />
-          <Route path="/operaciones" element={<div>Operaciones (En desarrollo)</div>} />
-          <Route path="/config" element={<div>Configuración (En desarrollo)</div>} />
-        </Routes>
-      </BrowserRouter>
+            {/* Placeholder Routes for other departments */}
+            <Route path="/ventas" element={
+              <ProtectedRoute>
+                <div>Ventas (En desarrollo)</div>
+              </ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                <div>Administración (En desarrollo)</div>
+              </ProtectedRoute>
+            } />
+            <Route path="/rrhh" element={
+              <ProtectedRoute>
+                <div>RRHH (En desarrollo)</div>
+              </ProtectedRoute>
+            } />
+            <Route path="/operaciones" element={
+              <ProtectedRoute>
+                <div>Operaciones (En desarrollo)</div>
+              </ProtectedRoute>
+            } />
+            <Route path="/config" element={
+              <ProtectedRoute>
+                <div>Configuración (En desarrollo)</div>
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </MantineProvider>
   );
 }

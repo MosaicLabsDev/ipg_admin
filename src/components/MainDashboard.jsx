@@ -1,9 +1,11 @@
-import { Container, Title, SimpleGrid, Card, Text, Group, Stack } from '@mantine/core';
-import { IconMessage, IconUsers, IconSettings, IconBuilding, IconCash, IconClipboardList } from '@tabler/icons-react';
+import { Container, Title, SimpleGrid, Card, Text, Group, Stack, Button, Menu } from '@mantine/core';
+import { IconMessage, IconUsers, IconSettings, IconBuilding, IconCash, IconClipboardList, IconLogout, IconUser } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export function MainDashboard() {
   const navigate = useNavigate();
+  const { currentUser, logout } = useAuth();
 
   const departments = [
     {
@@ -50,6 +52,11 @@ export function MainDashboard() {
     }
   ];
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <Container size="xl" style={{ paddingBottom: 32, height: '100%', minHeight: '100vh' }}>
       <Stack spacing="xl">
@@ -67,11 +74,29 @@ export function MainDashboard() {
               <Title order={1} c="white">IPG Iribarren</Title>
               <Text c="white" size="lg">Panel de Control Administrativo</Text>
             </Stack>
-            <img
-              src="https://i.imgur.com/Q7TfbvU.png"
-              alt="IPG Iribarren"
-              width={150}
-            />
+            <Group>
+              <img
+                src="https://i.imgur.com/Q7TfbvU.png"
+                alt="IPG Iribarren"
+                width={150}
+              />
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <Button variant="white" leftSection={<IconUser size="1rem" />}>
+                    {currentUser}
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    leftSection={<IconLogout size="1rem" />}
+                    onClick={handleLogout}
+                    color="red"
+                  >
+                    Cerrar Sesión
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
           </Group>
         </div>
 
