@@ -1,7 +1,7 @@
 import { AppShell, Burger, Group, Title, Text, NavLink, Stack, Image, Button, Menu } from '@mantine/core';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { IconMessage, IconUsers, IconChartBar, IconSettings, IconHome, IconLogout, IconUser } from '@tabler/icons-react';
+import { IconMessage, IconUsers, IconChartBar, IconSettings, IconHome, IconLogout, IconUser, IconArrowLeft } from '@tabler/icons-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export function MarketingLayout({ children }) {
@@ -44,22 +44,32 @@ export function MarketingLayout({ children }) {
             </Group>
           </Group>
           
-          <Menu shadow="md" width={200}>
-            <Menu.Target>
-              <Button variant="subtle" leftSection={<IconUser size="1rem" />} c="var(--color-text-primary)">
-                {currentUser}
-              </Button>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                leftSection={<IconLogout size="1rem" />}
-                onClick={handleLogout}
-                color="red"
-              >
-                Cerrar Sesión
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          <Group>
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <Button variant="subtle" leftSection={<IconUser size="1rem" />} c="var(--color-text-primary)">
+                  {currentUser}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={<IconLogout size="1rem" />}
+                  onClick={handleLogout}
+                  color="red"
+                >
+                  Cerrar Sesión
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Button 
+              variant="subtle" 
+              leftSection={<IconArrowLeft size="1rem" />} 
+              c="var(--color-text-primary)"
+              onClick={() => navigate('/')}
+            >
+              Dashboard
+            </Button>
+          </Group>
         </Group>
       </AppShell.Header>
 
