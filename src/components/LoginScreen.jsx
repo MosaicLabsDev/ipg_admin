@@ -19,8 +19,8 @@ export function LoginScreen({ onLogin }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const acceptedUsers = import.meta.env.VITE_ACCEPTED_USERS?.split(',') ;
-  const acceptedPasswords = import.meta.env.VITE_ACCEPTED_PASSWORDS?.split(',');
+  const acceptedUsers = import.meta.env.VITE_ACCEPTED_USERS?.split(',') || ['ipg_marketing'];
+  const acceptedPasswords = import.meta.env.VITE_ACCEPTED_PASSWORDS?.split(',') || ['carla'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
