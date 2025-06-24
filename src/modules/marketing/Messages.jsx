@@ -32,6 +32,8 @@ export function Messages() {
 
   const editor = useOptimizedEditor();
 
+  const backendUrl = import.meta.env.VITE_BACKEND_SERVER_URL || 'http://localhost:9000';
+
   const handleAddPhone = useCallback(() => {
     if (newPhone && !phoneNumbers.includes(newPhone)) {
       setPhoneNumbers(prev => [...prev, newPhone]);
@@ -74,7 +76,7 @@ export function Messages() {
   }, [phoneNumbers]);
 
   const handleSend = useCallback(async () => {
-    if (!editor?.getHTML()) {
+    if (!editor?.getText()) {
       notifications.show({
         title: 'Error',
         message: 'Por favor, escribe un mensaje',
@@ -94,13 +96,13 @@ export function Messages() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('YOUR_BACKEND_ENDPOINT', {
+      const response = await fetch(`${backendUrl}/messages/send/bulk`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: editor.getHTML(),
+          message: editor.getText(),
           phoneNumbers,
         }),
       });
@@ -108,7 +110,7 @@ export function Messages() {
       if (response.ok) {
         notifications.show({
           title: 'Éxito',
-          message: 'Mensajes enviados correctamente',
+          message: 'Se ha iniciado el proceso de envío de mensajes correctamente',
           color: 'green',
         });
         editor.commands.setContent('');
