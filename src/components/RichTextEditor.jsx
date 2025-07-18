@@ -1,49 +1,59 @@
-import { memo } from 'react';
-import { RichTextEditor } from '@mantine/tiptap';
+import { memo, useCallback } from 'react';
+import { RichTextEditor, useRichTextEditorContext } from '@mantine/tiptap';
+import { IconPhoto } from '@tabler/icons-react';
 
-const content =
-  '<h2 style="text-align: center;">Welcome to Mantine rich text editor</h2><p><code>RichTextEditor</code> component focuses on usability and is designed to be as simple as possible to bring a familiar editing experience to regular users. <code>RichTextEditor</code> is based on <a href="https://tiptap.dev/" rel="noopener noreferrer" target="_blank">Tiptap.dev</a> and supports all of its features:</p><ul><li>General text formatting: <strong>bold</strong>, <em>italic</em>, <u>underline</u>, <s>strike-through</s> </li><li>Headings (h1-h6)</li><li>Sub and super scripts (<sup>&lt;sup /&gt;</sup> and <sub>&lt;sub /&gt;</sub> tags)</li><li>Ordered and bullet lists</li><li>Text align&nbsp;</li><li>And all <a href="https://tiptap.dev/extensions" target="_blank" rel="noopener noreferrer">other extensions</a></li></ul>';
+// Custom Image Upload Button Component
+const ImageUploadButton = () => {
+  const { editor } = useRichTextEditorContext();
+
+  const handleImageUpload = useCallback((event) => {
+    const file = event.target.files?.[0];
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Image = e.target?.result;
+        if (base64Image && editor) {
+          editor.chain().focus().setImage({ src: base64Image }).run();
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [editor]);
+
+  return (
+    <RichTextEditor.Control
+      title="Upload image"
+      aria-label="Upload image"
+    >
+      <input
+        type="file"
+        accept="image/png,image/jpeg"
+        onChange={handleImageUpload}
+        style={{ display: 'none' }}
+        id="image-upload"
+      />
+      <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+        <IconPhoto size={16} stroke={1.5} />
+      </label>
+    </RichTextEditor.Control>
+  );
+};
 
 const RichTextEditorComponent = memo(function RichTextEditorComponent({ editor }) {
   return (
     <RichTextEditor editor={editor}>
       <RichTextEditor.Toolbar sticky stickyOffset="100px">
         <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
+          <RichTextEditor.Bold title="Negrita (*texto*)" />
+          <RichTextEditor.Italic title="Cursiva (_texto_)" />
+          <RichTextEditor.Strikethrough title="Tachado (~texto~)" />
+          <RichTextEditor.Code title="Monoespaciado (`texto`)" />
           <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
-          <RichTextEditor.Code />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>
-          <RichTextEditor.H1 />
-          <RichTextEditor.H2 />
-          <RichTextEditor.H3 />
-          <RichTextEditor.H4 />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-          <RichTextEditor.Subscript />
-          <RichTextEditor.Superscript />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Link />
-          <RichTextEditor.Unlink />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
-          <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignJustify />
-          <RichTextEditor.AlignRight />
+          <RichTextEditor.BulletList title="Lista con viñetas" />
+          <ImageUploadButton />
         </RichTextEditor.ControlsGroup>
 
         <RichTextEditor.ControlsGroup>

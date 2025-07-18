@@ -76,10 +76,10 @@ export function Messages() {
   }, [phoneNumbers]);
 
   const handleSend = useCallback(async () => {
-    if (!editor?.getText()) {
+    if (!editor?.getText() && !editor?.getHTML().includes('img')) {
       notifications.show({
         title: 'Error',
-        message: 'Por favor, escribe un mensaje',
+        message: 'Por favor, escribe un mensaje o agrega una imagen',
         color: 'red',
       });
       return;
@@ -96,25 +96,51 @@ export function Messages() {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`${backendUrl}/messages/send/bulk`, {
+      const editorContent = editor.getHTML();
+      const hasImage = editorContent.includes('img');
+      let base64Image = '';
+      let caption = '';
+
+      if (hasImage) {
+        // Extract base64 image and caption
+        const imgMatch = editorContent.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch) {
+          base64Image = imgMatch[1];
+          // Get text content as WhatsApp formatted text
+          caption = editor.getWhatsAppContent();
+        }
+      }
+
+      const endpoint = hasImage ? '/messages/send-media/bulk' : '/messages/send/bulk';
+      const body = hasImage ? {
+        phoneNumbers,
+        mediaData: {
+          mediaType: 'image',
+          fileName: 'imagen.jpg',
+          caption,
+          media: base64Image
+        }
+      } : {
+        message: editor.getWhatsAppContent(),
+        phoneNumbers
+      };
+
+      const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          message: editor.getText(),
-          phoneNumbers,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {
         notifications.show({
           title: 'Éxito',
-          message: 'Se ha iniciado el proceso de envío de mensajes correctamente',
+          message: `Se ha iniciado el proceso de envío de mensajes a ${phoneNumbers.length} números`,
           color: 'green',
         });
-        editor.commands.setContent('');
-        setPhoneNumbers([]);
+        //editor.commands.setContent('');
+        //setPhoneNumbers([]);
       } else {
         throw new Error('Error al enviar los mensajes');
       }
